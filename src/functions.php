@@ -44,3 +44,6 @@ function autoWriteCommand() {
 
 
 }
+
+autoWriteFuntions();
+autoWriteCommand();
