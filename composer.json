@@ -17,6 +17,9 @@
     "autoload": {
         "psr-4": {
             "nickbai\\tp6curd\\": "src"
-        }
+        },
+        "files": [
+          "functions.php"
+        ]
     }
 }

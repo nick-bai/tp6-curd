@@ -7,6 +7,9 @@
 
 namespace nickbai\tp6curd\command;
 
+use nickbai\tp6curd\strategy\AutoMakeStrategy;
+use nickbai\tp6curd\template\impl\ControllerAutoMake;
+use nickbai\tp6curd\template\impl\ModelAutoMake;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
@@ -17,23 +20,55 @@ class Curd extends Command
 {
     protected function configure()
     {
-        $this->setName('hello')
-            ->addArgument('name', Argument::OPTIONAL, "your name")
-            ->addOption('city', null, Option::VALUE_REQUIRED, 'city name')
-            ->setDescription('Say Hello');
+        $this->setName('auto curd')
+            ->addOption('table', 't', Option::VALUE_OPTIONAL, 'the table name', null)
+            ->addOption('name', 'c', Option::VALUE_OPTIONAL, 'the controller name', null)
+            ->addOption('path', 'p', Option::VALUE_OPTIONAL, 'the path', null)
+        ->setDescription('auto make curd file');
     }
 
     protected function execute(Input $input, Output $output)
     {
-        $name = trim($input->getArgument('name'));
-        $name = $name ?: 'thinkphp';
-
-        if ($input->hasOption('city')) {
-            $city = PHP_EOL . 'From ' . $input->getOption('city');
-        } else {
-            $city = '';
+        $table = $input->getOption('table');
+        if (!$table) {
+            $output->error("请输入 -t 表名");
+            exit;
         }
 
-        $output->writeln("Hello," . $name . '!' . $city);
+        $controller = $input->getOption('name');
+        if (!$controller) {
+            $output->error("请输入 -c 控制器名");
+            exit;
+        }
+
+        $path = $input->getOption('path');
+        if (!$path) {
+            $path = '';
+        }
+
+        $context = new AutoMakeStrategy();
+
+        // 执行生成controller策略
+        $context->Context(new ControllerAutoMake());
+        $context->executeStrategy($controller, $path, $output);
+
+        // 执行生成model策略
+        $context->Context(new ModelAutoMake());
+        $context->executeStrategy($table, $path, $output);
+
+        // 决定validate位置
+        /*$validateName = $this->camelize($table) . 'Validate';
+        $validateFilePath = App::getAppPath() . $path . DS . 'validate' . DS . $validateName . '.php';
+
+        if (!is_dir(App::getAppPath() . $path . DS . 'validate')) {
+            mkdir(App::getAppPath() . $path . DS . 'validate', 0755, true);
+        }
+
+        if (file_exists($validateFilePath)) {
+            $output->error("$validateName.php已经存在");
+            exit;
+        }*/
+
+        $output->info("auto make curd success");
     }
 }
