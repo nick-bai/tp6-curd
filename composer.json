@@ -1,0 +1,22 @@
+{
+    "name": "nickbai/tp6-curd",
+    "description": "基于thinkphp6的一键curd库",
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "topthink/framework": "^6.0.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "NickBai",
+            "email": "bai@suq.cn"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "nickbai\\tp6curd\\": "src"
+        }
+    }
+}
