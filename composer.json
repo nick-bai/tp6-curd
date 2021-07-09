@@ -20,7 +20,7 @@
             "nickbai\\tp6curd\\": "src"
         },
         "files": [
-          "src\\functions.php"
+            "src/helper.php"
         ]
     }
 }

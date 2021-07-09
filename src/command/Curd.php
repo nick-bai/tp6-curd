@@ -12,7 +12,6 @@ use nickbai\tp6curd\template\impl\ControllerAutoMake;
 use nickbai\tp6curd\template\impl\ModelAutoMake;
 use think\console\Command;
 use think\console\Input;
-use think\console\input\Argument;
 use think\console\input\Option;
 use think\console\Output;
 
