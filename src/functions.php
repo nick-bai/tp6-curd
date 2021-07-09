@@ -6,7 +6,7 @@
  */
 function autoWriteFuntions() {
 
-    $tpl ==<<<EOL
+    $tpl = <<<EOL
 
 /**
  * 模型内统一数据返回
@@ -42,7 +42,13 @@ EOL;
 
 function autoWriteCommand() {
 
+    $command = include \think\facade\App::getAppPath() . 'config/console.php';
+    $command['commands'][] = [
+        'curd' => 'nickbai\\tp6curd\\command\Curd'
+    ];
 
+    $commandConf = \Symfony\Component\VarExporter\VarExporter::export($command);
+    file_put_contents(\think\facade\App::getAppPath() . 'config/console.php', $commandConf);
 }
 
 autoWriteFuntions();
