@@ -64,6 +64,9 @@ class ControllerAutoMake implements IAutoMake
 
             $controllerTpl = dirname(dirname(__DIR__)) . '/tpl/baseController.tpl';
             $tplContent = file_get_contents($controllerTpl);
+
+            $tplContent = str_replace('<namespace>', $namespace, $tplContent);
+
             file_put_contents(App::getAppPath() . $filePath . DS . 'controller' . DS . 'Base.php', $tplContent);
         }
     }
