@@ -5,7 +5,8 @@
         "php": ">=7.1",
         "ext-json": "*",
         "ext-curl": "*",
-        "topthink/framework": "^6.0.0"
+        "topthink/framework": "^6.0.0",
+        "symfony/var-exporter": "^5.3"
     },
     "license": "MIT",
     "authors": [
