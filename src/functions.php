@@ -4,40 +4,11 @@
  * Date: 2021/7/9
  * Time: 12:11 AM
  */
-function autoWriteFuntions() {
+function autoWriteFunctions() {
 
-    $tpl = <<<EOL
+    $tpl = file_get_contents(dirname(__FILE__) . '/tpl/functions.tpl');
 
-/**
- * 模型内统一数据返回
- * @param $code
- * @param string $msg
- * @param array $data
- * @return array
- */
-if (!function_exists('dataReturn')) {
-    function dataReturn($code, $msg = 'success', $data = []) {
-
-        return ['code' => $code, 'data' => $data, 'msg' => $msg];
-    }
-}
-
-/**
- * 统一返回json数据
- * @param $code
- * @param string $msg
- * @param array $data
- * @return \think\response\Json
- */
-if (!function_exists('jsonReturn')) { 
-    function jsonReturn($code, $msg = 'success', $data = []) {
-    
-        return json(['code' => $code, 'data' => $data, 'msg' => $msg]);
-    }
-}
-EOL;
-
-    file_put_contents(\think\facade\App::getAppPath() . 'common.php', $tpl, FILE_APPEND);
+    file_put_contents(dirname(__FILE__) . '/../../../../app/common.php', $tpl, FILE_APPEND);
 }
 
 function autoWriteCommand() {
@@ -48,8 +19,8 @@ function autoWriteCommand() {
     ];
 
     $commandConf = \Symfony\Component\VarExporter\VarExporter::export($command);
-    file_put_contents(\think\facade\App::getAppPath() . 'config/console.php', $commandConf);
+    file_put_contents(dirname(__FILE__) . '/../../../../config/console.php', $commandConf);
 }
 
-autoWriteFuntions();
+autoWriteFunctions();
 autoWriteCommand();
