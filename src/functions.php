@@ -13,7 +13,7 @@ function autoWriteFunctions() {
 
 function autoWriteCommand() {
 
-    $command = include \think\facade\App::getAppPath() . 'config/console.php';
+    $command = include dirname(__FILE__) . '/../../../../config/console.php';
     $command['commands'][] = [
         'curd' => 'nickbai\\tp6curd\\command\Curd'
     ];
