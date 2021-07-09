@@ -8,7 +8,7 @@ namespace nickbai\tp6curd\template;
 
 interface IAutoMake
 {
-    public function check($flag, $path, $output);
+    public function check($flag, $path);
 
-    public function make($flag, $path);
+    public function make($flag, $path, $other);
 }

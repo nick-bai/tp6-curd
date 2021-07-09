@@ -17,9 +17,9 @@ class AutoMakeStrategy
         $this->strategy = $obj;
     }
 
-    public function executeStrategy($flag, $path, $output)
+    public function executeStrategy($flag, $path, $other)
     {
-        $this->strategy->check($flag, $path, $output);
-        $this->strategy->make($flag, $path);
+        $this->strategy->check($flag, $path);
+        $this->strategy->make($flag, $path, $other);
     }
 }

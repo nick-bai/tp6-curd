@@ -35,6 +35,7 @@ class <model> extends Model
 
            // TODO 去重校验
 
+           $param['add_time'] = date('Y-m-d H:i:s');
            $this->insert($param);
         } catch(\Exception $e) {
 
@@ -73,6 +74,7 @@ class <model> extends Model
 
             // TODO 去重校验
 
+            $param['update_time'] = date('Y-m-d H:i:s');
             $this->where('<pk>', $param['<pk>'])->update($param);
         } catch(\Exception $e) {
 

@@ -10,6 +10,7 @@ namespace nickbai\tp6curd\command;
 use nickbai\tp6curd\strategy\AutoMakeStrategy;
 use nickbai\tp6curd\template\impl\ControllerAutoMake;
 use nickbai\tp6curd\template\impl\ModelAutoMake;
+use nickbai\tp6curd\template\impl\ValidateAutoMake;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Option;
@@ -49,24 +50,15 @@ class Curd extends Command
 
         // 执行生成controller策略
         $context->Context(new ControllerAutoMake());
-        $context->executeStrategy($controller, $path, $output);
+        $context->executeStrategy($controller, $path, $table);
 
         // 执行生成model策略
         $context->Context(new ModelAutoMake());
-        $context->executeStrategy($table, $path, $output);
+        $context->executeStrategy($table, $path, '');
 
-        // 决定validate位置
-        /*$validateName = $this->camelize($table) . 'Validate';
-        $validateFilePath = App::getAppPath() . $path . DS . 'validate' . DS . $validateName . '.php';
-
-        if (!is_dir(App::getAppPath() . $path . DS . 'validate')) {
-            mkdir(App::getAppPath() . $path . DS . 'validate', 0755, true);
-        }
-
-        if (file_exists($validateFilePath)) {
-            $output->error("$validateName.php已经存在");
-            exit;
-        }*/
+        // 执行生成validate策略
+        $context->Context(new ValidateAutoMake());
+        $context->executeStrategy($table, $path, '');
 
         $output->info("auto make curd success");
     }

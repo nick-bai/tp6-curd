@@ -10,10 +10,11 @@ use nickbai\tp6curd\extend\Utils;
 use nickbai\tp6curd\template\IAutoMake;
 use think\facade\App;
 use think\facade\Db;
+use think\console\Output;
 
 class ModelAutoMake implements IAutoMake
 {
-    public function check($table, $path, $output)
+    public function check($table, $path)
     {
         !defined('DS') && define('DS', DIRECTORY_SEPARATOR);
 
@@ -25,12 +26,13 @@ class ModelAutoMake implements IAutoMake
         }
 
         if (file_exists($modelFilePath)) {
+            $output = new Output();
             $output->error("$modelName.php已经存在");
             exit;
         }
     }
 
-    public function make($table, $path)
+    public function make($table, $path, $other)
     {
         $controllerTpl = dirname(dirname(__DIR__)) . '/tpl/model.tpl';
         $tplContent = file_get_contents($controllerTpl);
