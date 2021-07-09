@@ -3,7 +3,7 @@
 namespace app<namespace>controller;
 
 use app<namespace>model\<model> as <model>Model;
-use app<namespace>validate\<controller>Validate;
+use app<namespace>validate\<model>Validate;
 use think\exception\ValidateException;
 
 class <controller> extends Base
@@ -36,7 +36,7 @@ class <controller> extends Base
 
             // 检验完整性
             try {
-                validate(<controller>Validate::class)->check($param);
+                validate(<model>Validate::class)->check($param);
             } catch (ValidateException $e) {
                 return jsonReturn(-1, $e->getError());
             }
@@ -72,7 +72,7 @@ class <controller> extends Base
 
             // 检验完整性
             try {
-                validate(<controller>Validate::class)->check($param);
+                validate(<model>Validate::class)->check($param);
             } catch (ValidateException $e) {
                 return jsonReturn(-1, $e->getError());
             }

@@ -4,8 +4,10 @@ namespace nickbai\tp6curd\template\impl;
 
 use nickbai\tp6curd\extend\Utils;
 use nickbai\tp6curd\template\IAutoMake;
+use Symfony\Component\VarExporter\VarExporter;
 use think\console\Output;
 use think\facade\App;
+use think\facade\Db;
 
 class ValidateAutoMake implements IAutoMake
 {
@@ -27,6 +29,28 @@ class ValidateAutoMake implements IAutoMake
     
     public function make($table, $path, $other)
     {
-        // TODO: Implement make() method.
+        $validateTpl = dirname(dirname(__DIR__)) . '/tpl/validate.tpl';
+        $tplContent = file_get_contents($validateTpl);
+
+        $model = ucfirst(Utils::camelize($table));
+        $filePath = empty($path) ? '' : DS . $path;
+
+        $prefix = config('database.connections.mysql.prefix');
+        $column = Db::query('SHOW FULL COLUMNS FROM `' . $prefix . $table . '`');
+        $rule = [];
+        $attributes = [];
+        foreach ($column as $vo) {
+            $rule[$vo['Field']] = 'require';
+            $attributes[$vo['Field']] = $vo['Comment'];
+        }
+
+        $ruleArr = VarExporter::export($rule);
+        $attributesArr = VarExporter::export($attributes);
+
+        $tplContent = str_replace('<model>', $model, $tplContent);
+        $tplContent = str_replace('<rule>', '' . $ruleArr, $tplContent);
+        $tplContent = str_replace('<attributes>', $attributesArr, $tplContent);
+
+        file_put_contents(App::getAppPath() . $filePath . DS . 'validate' . DS . $model . 'Validate.php', $tplContent);
     }
 }
