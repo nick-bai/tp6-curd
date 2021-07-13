@@ -1,6 +1,6 @@
 <?php
 
-namespace app\validate;
+namespace app<namespace>validate;
 
 use nickbai\tp6curd\extend\ExtendValidate;
 

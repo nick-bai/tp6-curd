@@ -34,6 +34,7 @@ class ValidateAutoMake implements IAutoMake
 
         $model = ucfirst(Utils::camelize($table));
         $filePath = empty($path) ? '' : DS . $path;
+        $namespace = empty($path) ? '\\' : '\\' . $path . '\\';
 
         $prefix = config('database.connections.mysql.prefix');
         $column = Db::query('SHOW FULL COLUMNS FROM `' . $prefix . $table . '`');
@@ -47,6 +48,7 @@ class ValidateAutoMake implements IAutoMake
         $ruleArr = VarExporter::export($rule);
         $attributesArr = VarExporter::export($attributes);
 
+        $tplContent = str_replace('<namespace>', $namespace, $tplContent);
         $tplContent = str_replace('<model>', $model, $tplContent);
         $tplContent = str_replace('<rule>', '' . $ruleArr, $tplContent);
         $tplContent = str_replace('<attributes>', $attributesArr, $tplContent);
