@@ -9,8 +9,12 @@ class <model> extends Model
 {
     //支持软删除
     use SoftDelete;
+    //列的类型为:datetime.不要使用int
     protected $deleteTime = 'delete_time';
     protected $pk = '<pk>';
+    // 定义时间戳字段名
+    protected $createTime = 'add_time';
+    protected $updateTime = 'update_time';
     
     /**
     * 获取分页列表
@@ -41,8 +45,10 @@ class <model> extends Model
 
            // TODO 去重校验
 
-           $param['add_time'] = date('Y-m-d H:i:s');
-           $this->insert($param);
+           //$param['add_time'] = date('Y-m-d H:i:s');
+           //$this->insert($param);
+           $ins = new <model>;
+           $ins->save($param);
         } catch(\Exception $e) {
 
            return dataReturn(-1, $e->getMessage());
@@ -60,7 +66,8 @@ class <model> extends Model
     {
         try {
 
-            $info = $this->where('<pk>', $id)->find();
+            //$info = $this->where('<pk>', $id)->find();
+            $info = <model>::find($id);
         } catch(\Exception $e) {
 
             return dataReturn(-1, $e->getMessage());
@@ -80,8 +87,9 @@ class <model> extends Model
 
             // TODO 去重校验
 
-            $param['update_time'] = date('Y-m-d H:i:s');
-            $this->where('<pk>', $param['<pk>'])->update($param);
+            //$param['update_time'] = date('Y-m-d H:i:s');
+            //$this->where('<pk>', $param['<pk>'])->update($param);
+            <model>::update($param, ['<pk>' => $param['<pk>']]);
         } catch(\Exception $e) {
 
             return dataReturn(-1, $e->getMessage());
