@@ -2,10 +2,16 @@
 
 namespace app<namespace>model;
 
-use think\model;
+use think\model\concern\SoftDelete;
+use think\Model;
 
 class <model> extends Model
 {
+    //支持软删除
+    use SoftDelete;
+    protected $deleteTime = 'delete_time';
+    protected $pk = '<pk>';
+    
     /**
     * 获取分页列表
     * @param $where
@@ -85,7 +91,7 @@ class <model> extends Model
     }
 
     /**
-    * 删除信息
+    * 软删除信息
     * @param $id
     * @return array
     */
@@ -94,8 +100,27 @@ class <model> extends Model
         try {
 
             // TODO 不可删除校验
+            <model>::destroy($id);
+         } catch(\Exception $e) {
 
-            $this->where('<pk>', $id)->delete();
+            return dataReturn(-1, $e->getMessage());
+         }
+
+        return dataReturn(0, 'success');
+    }
+    
+    /**
+    * 物理删除信息
+    * @param $id
+    * @return array
+    */
+    public function physicalDel<model>ById($id)
+    {
+        try {
+
+            // TODO 不可删除校验
+            // 物理删除
+            <model>::destroy($id, true);
          } catch(\Exception $e) {
 
             return dataReturn(-1, $e->getMessage());
