@@ -40,8 +40,29 @@ class ValidateAutoMake implements IAutoMake
         $column = Db::query('SHOW FULL COLUMNS FROM `' . $prefix . $table . '`');
         $rule = [];
         $attributes = [];
+        //以下列不在校验之列.这些都由系统装填
+        $notValidateField = ['add_time','update_time','delete_time'];
         foreach ($column as $vo) {
-            $rule[$vo['Field']] = 'require';
+            if(in_array($vo['Field'], $notValidateField)){
+                continue;
+            }
+            //not null为必填的
+            //null为选填的
+            //主键的类型是自增的为:number
+            if($vo['Key']=='PRI'){ //主键
+                if($vo['Extra']=='auto_increment'){
+                    $rule[$vo['Field']] = 'number';
+                }else{
+                    $rule[$vo['Field']] = 'require';
+                }
+            }else{ //非主键
+                if($vo['Null']=='NO'){
+                    $rule[$vo['Field']] = 'require';
+                }else{
+                    $rule[$vo['Field']] = '';
+                }
+            }
+            //$rule[$vo['Field']] = 'require';
             $attributes[$vo['Field']] = $vo['Comment'];
         }
 
