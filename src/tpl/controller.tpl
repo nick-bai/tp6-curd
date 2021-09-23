@@ -85,7 +85,7 @@ class <controller> extends Base
     }
 
     /**
-    * 删除
+    * 软删除
     */
     public function del()
     {
@@ -93,6 +93,19 @@ class <controller> extends Base
 
         $<model>Model = new <model>Model();
         $info = $<model>Model->del<model>ById($id);
+
+        return json($info);
+   }
+   
+    /**
+    * 物理删除
+    */
+   public function remove()
+   {
+        $id = input('param.<pk>');
+
+        $<model>Model = new <model>Model();
+        $info = $<model>Model->physicalDel<model>ById($id);
 
         return json($info);
    }
