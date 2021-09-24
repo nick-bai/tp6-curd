@@ -86,10 +86,12 @@ class <model> extends Model
         try {
 
             // TODO 去重校验
-
+            if(!array_key_exists('<pk>', $param)){
+                return dataReturn(-1, '缺少主键输入');
+            }
             //$param['update_time'] = date('Y-m-d H:i:s');
             //$this->where('<pk>', $param['<pk>'])->update($param);
-            <model>::update($param, ['<pk>' => $param['<pk>']]);
+            <model>::update($param);
         } catch(\Exception $e) {
 
             return dataReturn(-1, $e->getMessage());
