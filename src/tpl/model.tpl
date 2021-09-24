@@ -2,10 +2,20 @@
 
 namespace app<namespace>model;
 
-use think\model;
+use think\model\concern\SoftDelete;
+use think\Model;
 
 class <model> extends Model
 {
+    //支持软删除
+    use SoftDelete;
+    //列的类型为:datetime.不要使用int
+    protected $deleteTime = 'delete_time';
+    protected $pk = '<pk>';
+    // 定义时间戳字段名
+    protected $createTime = 'add_time';
+    protected $updateTime = 'update_time';
+    
     /**
     * 获取分页列表
     * @param $where
@@ -35,8 +45,10 @@ class <model> extends Model
 
            // TODO 去重校验
 
-           $param['add_time'] = date('Y-m-d H:i:s');
-           $this->insert($param);
+           //$param['add_time'] = date('Y-m-d H:i:s');
+           //$this->insert($param);
+           $ins = new <model>;
+           $ins->save($param);
         } catch(\Exception $e) {
 
            return dataReturn(-1, $e->getMessage());
@@ -54,7 +66,8 @@ class <model> extends Model
     {
         try {
 
-            $info = $this->where('<pk>', $id)->find();
+            //$info = $this->where('<pk>', $id)->find();
+            $info = <model>::find($id);
         } catch(\Exception $e) {
 
             return dataReturn(-1, $e->getMessage());
@@ -73,9 +86,12 @@ class <model> extends Model
         try {
 
             // TODO 去重校验
-
-            $param['update_time'] = date('Y-m-d H:i:s');
-            $this->where('<pk>', $param['<pk>'])->update($param);
+            if(!array_key_exists('<pk>', $param)){
+                return dataReturn(-1, '缺少主键输入');
+            }
+            //$param['update_time'] = date('Y-m-d H:i:s');
+            //$this->where('<pk>', $param['<pk>'])->update($param);
+            <model>::update($param);
         } catch(\Exception $e) {
 
             return dataReturn(-1, $e->getMessage());
@@ -85,7 +101,7 @@ class <model> extends Model
     }
 
     /**
-    * 删除信息
+    * 软删除信息
     * @param $id
     * @return array
     */
@@ -94,8 +110,27 @@ class <model> extends Model
         try {
 
             // TODO 不可删除校验
+            <model>::destroy($id);
+         } catch(\Exception $e) {
 
-            $this->where('<pk>', $id)->delete();
+            return dataReturn(-1, $e->getMessage());
+         }
+
+        return dataReturn(0, 'success');
+    }
+    
+    /**
+    * 物理删除信息
+    * @param $id
+    * @return array
+    */
+    public function physicalDel<model>ById($id)
+    {
+        try {
+
+            // TODO 不可删除校验
+            // 物理删除
+            <model>::destroy($id, true);
          } catch(\Exception $e) {
 
             return dataReturn(-1, $e->getMessage());

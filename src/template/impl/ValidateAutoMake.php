@@ -40,8 +40,30 @@ class ValidateAutoMake implements IAutoMake
         $column = Db::query('SHOW FULL COLUMNS FROM `' . $prefix . $table . '`');
         $rule = [];
         $attributes = [];
+        //以下列不在校验之列.这些都由系统装填
+        $notValidateField = ['add_time','update_time','delete_time'];
         foreach ($column as $vo) {
-            $rule[$vo['Field']] = 'require';
+            if(in_array($vo['Field'], $notValidateField)){
+                continue;
+            }
+            $isR=$this->isRequireField($vo);
+            $lenF=$this->getFieldLength($vo);
+            $typeF=$this->getFieldType($vo);
+            $ruleF = [];
+            if($isR){
+                array_push($ruleF, 'require');
+            }
+            if($typeF){
+                array_push($ruleF, $typeF);
+            }
+            if($lenF!=-1){
+                array_push($ruleF, 'max:'.$lenF);
+            }
+            if(count($ruleF)==0){
+                continue;
+            }
+            $rule[$vo['Field']] = implode('|', $ruleF);
+            //$rule[$vo['Field']] = 'require';
             $attributes[$vo['Field']] = $vo['Comment'];
         }
 
@@ -54,5 +76,57 @@ class ValidateAutoMake implements IAutoMake
         $tplContent = str_replace('<attributes>', $attributesArr, $tplContent);
 
         file_put_contents(App::getAppPath() . $filePath . DS . 'validate' . DS . $model . 'Validate.php', $tplContent);
+    }
+    
+    //是否是必填项
+    private function isRequireField($vo){
+        //主键
+        if($vo['Key']=='PRI'){
+            if($vo['Extra']!='auto_increment'){
+                return true;
+            }
+        }else{ //非主键
+            if($vo['Null']=='NO'){
+                return true;
+            }
+        }
+        return false;
+    }
+    //长度
+    private function getFieldLength($vo){
+        preg_match('/\d+/', $vo['Type'], $matches);
+        if(count($matches)>0){
+            return $matches[0];
+        }
+        return -1;
+    }
+    //列的类型
+    private function getFieldType($vo){
+        $mysqlType = $vo['Type'];
+        $pos = strpos($vo['Type'],"(");
+        if($pos !== false){
+            //没有找到
+            $mysqlType = substr($vo['Type'], 0, $pos);
+        }
+        return $this->getTpRoles(strtolower($mysqlType));
+    }
+    //返回tp6中的规则定义
+    private function getTpRoles($mysqlType){
+        //映射定义(key=mysql中的类型,全小写. val=tp6验证规则中的定义)
+        $mp = array(
+            'varchar'  => 'chsDash', 
+            'int'  => 'integer', 
+            'datetime'  => 'date', 
+            'timestamp' => 'number',
+            'char' => 'chsDash',
+            'tinyint' => 'integer',
+            'text' => 'chsDash',
+            'float' => 'float',
+            'double' => 'float',
+            'decimal' => 'float');
+        if(!array_key_exists($mysqlType, $mp)){ //mp中没有定义
+            return false;
+        }
+        return $mp[$mysqlType];
     }
 }
